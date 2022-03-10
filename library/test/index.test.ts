@@ -1,9 +1,22 @@
 // 💡 https://jestjs.io/docs/api
-import { describe, expect, it } from '@jest/globals';
-import { sum } from '../source';
+import { describe, expect, it, jest } from '@jest/globals';
+import { renderHook } from '@testing-library/react-hooks';
+import useCleanup from '../source';
 
-describe('sum', () => {
-  it('adds two numbers together', () => {
-    expect(sum(1, 1)).toEqual(2);
+describe('useCleanup', () => {
+  it('should exist.', () => {
+    expect(useCleanup).not.toBeUndefined();
+  });
+
+  it('should invoke the callback when unmounted.', () => {
+    const cleanupFn = jest.fn();
+
+    const { unmount } = renderHook(() => useCleanup(cleanupFn));
+
+    expect(cleanupFn).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(cleanupFn).toHaveBeenCalledTimes(1);
   });
 });
